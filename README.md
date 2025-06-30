@@ -55,3 +55,10 @@ npm install
 npx prisma generate
 npx prisma migrate dev --name init
 npm run dev
+
+### 📱 Frontend Setup
+
+```bash
+cd krishibazar-frontend
+npm install
+npx expo start
