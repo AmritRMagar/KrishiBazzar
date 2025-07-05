@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "jsx": "react",
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./"
+  },
+  "include": [
+    "src/**/*.ts", "src/**/*.tsx",
+    "prisma"
+    
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
