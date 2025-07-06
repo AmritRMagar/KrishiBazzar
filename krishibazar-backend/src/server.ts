@@ -12,7 +12,6 @@ import productRoutes from "./routes/ProductRoutes";
 import registerRoutes from "./routes/RegisterRoutes";
 import profileRoutes from "./routes/profileRoutes";
 import checkoutRoutes from "./routes/checkoutRoutes";
-import EditProfileRoutes from "./routes/EditProfileRoutes";
 import notificationRoutes from "./routes/notificationRoutes";
 
 // Initialize Express app
@@ -46,7 +45,6 @@ app.use("/api/products", productRoutes); // Corrected route path
 app.use("/api/product", productRoutes); // Fixed route path
 app.use("/api/home", homeRoutes);
 app.use("/api", profileRoutes);
-app.use("/api", EditProfileRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/notifications", notificationRoutes);
 

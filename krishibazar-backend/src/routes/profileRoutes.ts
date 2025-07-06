@@ -1,8 +1,8 @@
 import express from "express";
 import { body, validationResult } from "express-validator";
 import prisma from "../config/prisma";
-import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 
 const router = express.Router();
 const jwtSecret = process.env.JWT_SECRET || "default_secret_key_if_not_set";
@@ -11,34 +11,48 @@ const jwtSecret = process.env.JWT_SECRET || "default_secret_key_if_not_set";
  * @swagger
  * tags:
  *   name: Profile
- *   description: Profile management endpoints
+ *   description: User Profile Management
  */
 
 /**
  * @swagger
  * /profile:
  *   get:
- *     summary: Get the user's profile
+ *     summary: Get current user's profile
  *     tags: [Profile]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: Successfully retrieved profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 name:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 phone:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *                 profileImage:
+ *                   type: string
  *       401:
- *         description: Unauthorized
+ *         description: Unauthorized - Missing or invalid token
  *       404:
  *         description: Profile not found
  *       500:
  *         description: Internal server error
  */
-router.get("/profile", async (req: Request, res: Response) :Promise<void> => {
+router.get("/profile", async (req: Request, res: Response): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      res.status(401).json({ message: "Authorization token required" });
-      return;
-    }
+    if (!authHeader) return void res.status(401).json({ message: "Authorization token required" });
 
     const token = authHeader.split(" ")[1];
     const decodedToken = jwt.verify(token, jwtSecret) as { id: number };
@@ -47,13 +61,11 @@ router.get("/profile", async (req: Request, res: Response) :Promise<void> => {
       where: { userId: decodedToken.id },
     });
 
-    if (!profile) {
-       res.status(404).json({ message: "Profile not found" });
-    }
+    if (!profile) return void res.status(404).json({ message: "Profile not found" });
 
     res.json(profile);
   } catch (error) {
-    console.error("Error:", error);
+    console.error("GET /profile error:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
@@ -62,7 +74,7 @@ router.get("/profile", async (req: Request, res: Response) :Promise<void> => {
  * @swagger
  * /profile:
  *   put:
- *     summary: Update the user's profile
+ *     summary: Update current user's profile
  *     tags: [Profile]
  *     security:
  *       - bearerAuth: []
@@ -85,7 +97,16 @@ router.get("/profile", async (req: Request, res: Response) :Promise<void> => {
  *                 type: string
  *     responses:
  *       200:
- *         description: Profile successfully updated
+ *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 profile:
+ *                   type: object
  *       400:
  *         description: Validation error
  *       401:
@@ -98,32 +119,19 @@ router.get("/profile", async (req: Request, res: Response) :Promise<void> => {
 router.put(
   "/profile",
   [
-    body("name").optional().isString().withMessage("Name must be a string"),
-    body("email").optional().isEmail().withMessage("Email is invalid"),
-    body("phone").optional().isString().withMessage("Phone must be a string"),
-    body("address")
-      .optional()
-      .isString()
-      .withMessage("Address must be a string"),
-    body("profileImage")
-      .optional()
-      .isString()
-      .withMessage("Profile image must be a string"),
+    body("name").optional().isString(),
+    body("email").optional().isEmail(),
+    body("phone").optional().isString(),
+    body("address").optional().isString(),
+    body("profileImage").optional().isString(),
   ],
-  async (req: Request, res: Response) :Promise<void> => {
+  async (req: Request, res: Response): Promise<void> => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-       res.status(400).json({ errors: errors.array() });
-    }
+    if (!errors.isEmpty()) return void res.status(400).json({ errors: errors.array() });
 
     try {
       const authHeader = req.headers.authorization;
-      if (!authHeader) {
-         res
-          .status(401)
-          .json({ message: "Authorization token required" });
-          return;
-      }
+      if (!authHeader) return void res.status(401).json({ message: "Authorization token required" });
 
       const token = authHeader.split(" ")[1];
       const decodedToken = jwt.verify(token, jwtSecret) as { id: number };
@@ -134,13 +142,17 @@ router.put(
         where: { userId: decodedToken.id },
       });
 
-      if (!existingProfile) {
-         res.status(404).json({ message: "Profile not found" });
-      }
+      if (!existingProfile) return void res.status(404).json({ message: "Profile not found" });
 
       const updatedProfile = await prisma.profile.update({
         where: { userId: decodedToken.id },
-        data: { name, email, phone, address, profileImage },
+        data: {
+          name: name ?? existingProfile.name,
+          email: email ?? existingProfile.email,
+          phone: phone ?? existingProfile.phone,
+          address: address ?? existingProfile.address,
+          profileImage: profileImage ?? existingProfile.profileImage,
+        },
       });
 
       res.json({
@@ -148,7 +160,7 @@ router.put(
         profile: updatedProfile,
       });
     } catch (error) {
-      console.error("Error:", error);
+      console.error("PUT /profile error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   }

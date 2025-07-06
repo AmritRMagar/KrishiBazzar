@@ -1,7 +1,7 @@
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-
+// Cart item structure
 export type CartItem = {
   id: string;
   title: string;
@@ -13,7 +13,7 @@ export type CartItem = {
   unit: string;
 };
 
-
+// Profile structure
 export type Profile = {
   name: string;
   email: string;
@@ -22,7 +22,7 @@ export type Profile = {
   profileImage: string;
 };
 
-
+// Order structure
 export type Order = {
   orderNumber: string;
   date: string;
@@ -30,6 +30,7 @@ export type Order = {
   items: CartItem[];
 };
 
+// Root Stack Param List for Navigation
 export type RootStackParamList = {
   Onboarding: undefined;
   Login: undefined;
@@ -37,6 +38,7 @@ export type RootStackParamList = {
   DashboardScreen: undefined;
   ProfileScreen: undefined;
   ProductScreen: { productId: string };
+  DevProduct: undefined;
   HomeScreen: { profile?: Profile };
   SearchScreen: undefined;
   ShippingAddressScreen: undefined;
@@ -56,12 +58,15 @@ export type RootStackParamList = {
   MenuScreen: undefined;
   GroupChatScreen: undefined;
   ExploreScreen: { categoryId: string };
-  ProductDetailScreen: { productId: string };
+  ProductDetailScreen: { productId: number }; // number based on your API
   CategoryScreen: { categoryId: string };
   SuccessScreen: undefined;
   OrderHistory: { order: Order };
+  CreateBillScreen: undefined;
+  SettingsScreen: undefined;
 };
 
+// Navigation and Route Props (example)
 export type CheckoutScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   "CheckoutScreen"
@@ -79,3 +84,4 @@ export type OrderHistoryRouteProp = RouteProp<
   RootStackParamList,
   "OrderHistory"
 >;
+

@@ -1,75 +1,221 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from "react";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import OnboardingScreen from "../src/screens/OnboardingScreen";
+import LoginScreen from "../src/screens/LoginScreen";
+import RegisterScreen from "../src/screens/RegisterScreen";
+import DashboardScreen from "../src/screens/DashboardScreen";
+import ProfileScreen from "../src/screens/ProfileScreen";
+import SearchScreen from "../src/screens/SearchScreen";
+import CartScreen from "../src/screens/CartScreen";
+import OrdersScreen from "../src/screens/OrdersScreen";
+import FavoritesScreen from "../src/screens/FavoritesScreen";
+import EditProfileScreen from "../src/screens/EditProfile";
+import NotificationsScreen from "../src/screens/NotificationsScreen";
+import ProductScreen from "../src/screens/ProductScreen";
+import MenuScreen from "../src/screens/MenuScreen";
+import ShippingAddressScreen from "../src/screens/ShippingAddressScreen";
+import HomeScreen from "../src/screens/HomeScreen";
+//import ChatScreen from "../src/screens/ChatScreen";
+import CheckoutScreen from "../src/screens/CheckoutScreen";
+import PaymentScreen from "../src/screens/PaymentScreen";
+import CreateBillScreen from "../src/screens/CreateBillScreen";
+import ProductDetailScreen from "../src/screens/ProductDetailScreen";
+import SuccessScreen from "../src/screens/SuccessScreen";
+// import InvoiceScreen from "../src/screens/InvoiceScreen";
+import DevProduct from "../src/screens/DevProduct";
+import useAuthStore from "../src/screens/useAuthStore";
+import { CartProvider } from "../src/screens/CartContext";
+import { FavoritesProvider } from "../src/screens/FavoritesContext";
+import OrderHistory from "../src/screens/OrderHistory";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
-export default function HomeScreen() {
+const Stack = createStackNavigator();
+
+const App = () => {
+
+  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const token = await AsyncStorage.getItem("token");
+        if (token) {
+          setIsAuthenticated(true);
+        }
+      } catch (error) {
+        console.error("Error checking authentication status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <CartProvider>
+      <FavoritesProvider>
+        <Stack.Navigator
+          initialRouteName={isAuthenticated ? "HomeScreen" : "Onboarding"}
+        >
+          <Stack.Screen
+            name="Onboarding"
+            component={OnboardingScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="RegisterScreen"
+            component={RegisterScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="DevProduct"
+            component={DevProduct}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="DashboardScreen"
+            component={DashboardScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="PaymentScreen"
+            component={PaymentScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ShippingAddressScreen"
+            component={ShippingAddressScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ProfileScreen"
+            component={ProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="OrderHistory"
+            component={OrderHistory}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="HomeScreen"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ProductDetailScreen"
+            component={ProductDetailScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SearchScreen"
+            component={SearchScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CartScreen"
+            component={CartScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="OrdersScreen"
+            component={OrdersScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="FavoritesScreen"
+            component={FavoritesScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfileScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="NotificationsScreen"
+            component={NotificationsScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Checkout"
+            component={CheckoutScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="ProductScreen"
+            component={ProductScreen}
+            options={{ headerShown: false }}
+          />
+          {/* <Stack.Screen
+            name="ChatScreen"
+            component={ChatScreen}
+            options={{ headerShown: false }}
+          /> */}
+          <Stack.Screen
+            name="MenuScreen"
+            component={MenuScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="SuccessScreen"
+            component={SuccessScreen} // Ensure this is a valid React component
+            options={{ headerShown: false }}
+          />
+          {/* <Stack.Screen
+        name="InvoiceScreen"
+        component={InvoiceScreen}
+        options={{ headerShown: false }}
+      /> */}
+          {/* <Stack.Screen
+        name="GroupChatScreen"
+        component={GroupChatScreen}
+        options={{ headerShown: false }}
+      />
+      //
+      <Stack.Screen
+        name="BillConfirmationScreen"
+        component={BillConfirmationScreen} // Ensure this is a valid React component
+        options={{ headerShown: false }}
+      /> */}
+          <Stack.Screen
+            name="CreateBillScreen"
+            component={CreateBillScreen} // Ensure this is a valid React component
+            options={{ headerShown: false }}
+          />
+        </Stack.Navigator>
+      </FavoritesProvider>
+    </CartProvider>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+    backgroundColor: '#fff',
   },
 });
+
+export default App;
