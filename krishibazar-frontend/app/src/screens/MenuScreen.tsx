@@ -27,8 +27,7 @@ const MenuScreen = () => {
 
   const handleCreateBill = () => navigation.navigate("CreateBillScreen");
 
-  const handleOrderHistory = () => navigation.navigate("OrderHistory");
-
+   const handleOrderHistory = () => { navigation.navigate("OrderHistory", { order: undefined });};
 
   const handleSettings = () => navigation.navigate("SettingsScreen");
 
@@ -47,7 +46,7 @@ const MenuScreen = () => {
     if (userRole === "SELLER") {
       navigation.navigate("DashboardScreen");
     } else if (userRole === "BUYER") {
-      navigation.navigate("HomeScreen");
+      navigation.navigate("HomeScreen", {});
 
     } else {
       navigation.goBack();

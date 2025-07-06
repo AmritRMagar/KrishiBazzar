@@ -27,6 +27,7 @@ const ProfileScreen = () => {
 const [profile, setProfile] = useState({
   name: userName?.name || "Guest",
   email: mail || "example@example.com",
+  phone: "+123 456 7890",
   address: "Nayamil, Butwal",
   profileImage: "https://via.placeholder.com/150",
 });
@@ -71,7 +72,10 @@ const [profile, setProfile] = useState({
               <FontAwesome name="envelope" size={20} color="#4CAF50" />
               <Text style={styles.infoText}>{mail}</Text>
             </View>
-          
+            <View style={styles.infoItem}>
+              <FontAwesome name="phone" size={20} color="#4CAF50" />
+              <Text style={styles.infoText}>{profile.phone}</Text>
+            </View>
             <View style={styles.infoItem}>
               <FontAwesome name="map-marker" size={20} color="#4CAF50" />
               <Text style={styles.infoText}>{profile.address}</Text>

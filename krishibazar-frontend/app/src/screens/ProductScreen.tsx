@@ -264,6 +264,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  productItem: {
+    flexDirection: "row",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    elevation: 2,
+  },
+  productDetails: {
+    marginLeft: 10,
+    flex: 1,
+    justifyContent: "center",
+  },
+  productTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5,
+  },
   footerContainer: {
     position: "absolute",
     bottom: 0,
@@ -273,5 +292,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
   },
 });
+
 
 export default ProductScreen;

@@ -61,7 +61,7 @@ export type RootStackParamList = {
   ProductDetailScreen: { productId: number }; // number based on your API
   CategoryScreen: { categoryId: string };
   SuccessScreen: undefined;
-  OrderHistory: { order: Order };
+  OrderHistory: { order?: Order };
   CreateBillScreen: undefined;
   SettingsScreen: undefined;
 };
